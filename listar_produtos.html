@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de produtos</title>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <th>Nome</th>
+            <th>Valor</th>
+            <th>Quantidade</th>
+        </thead>
+        <tbody id="corpoTabelaProduto"></tbody>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/listar_produtos',
+                method: 'GET',
+                dataType: 'json',
+                success: (produtos) => {
+                    for (var i = 0; i < produtos.length; i++) {
+                        $('#corpoTabelaProduto')
+                            .append(`<tr>
+                                        <td>${produtos[i].nome}</td>
+                                        <td>${produtos[i].valor}</td>
+                                        <td>${produtos[i].quantidade}</td>
+                                    </tr>`);
+                    }
+                },
+                error: () => {
+                    alert("erro!")
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

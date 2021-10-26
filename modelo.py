@@ -1,8 +1,4 @@
-from os import system
-from flask.json import jsonify
 from config import *
-
-import json
 
 class Produto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,14 +7,18 @@ class Produto(db.Model):
     quantidade = db.Column(db.Integer)
 
     def json(self): 
-        return f"{{ 'id': {self.id}, 'nome': {self.nome}, 'valor': {self.valor}, 'quantidade': {self.quantidade} }}"
+        return { 
+            'id': self.id, 
+            'nome': self.nome, 
+            'valor': self.valor, 
+            'quantidade': self.quantidade
+            }
 
     def __str__(self):
         return str(self.id) + ", " +\
                self.nome + ", " +\
                str(self.valor) + ", " +\
                str(self.quantidade)
-
 
 if __name__ == "__main__":
 
