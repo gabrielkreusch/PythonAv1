@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de cliente</title>
+</head>
+<body>
+    <a href="\listar_clientes">Voltar</a>
+    <br/>
+
+    <form>
+        <input id="campoNome" name="nome" type="text" placeholder="Nome" />
+        <input id="campoCpf" name="cpf" type="text" placeholder="CPF" />
+        <input id="campoTelefone" name="telefone" type="text" placeholder="Telefone" />
+        <select id="campoEnderecoId" name="endereco_id"></select>
+        <input id="btnCadastrar" type="button" value="Enviar" />
+    </form>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<script>
+    function clienteIncluido(retorno) {
+        if (retorno.resultado == "ok") { // a operação deu certo? 
+            // informar resultado de sucesso 
+            alert("Cliente incluída com sucesso!");
+            // limpar os campos 
+            $("#campoNome").val("");
+            $("#campoCpf").val("");
+            $("#campoTelefone").val("");
+        } else {
+            // informar mensagem de erro 
+            alert(retorno.resultado + ":" + retorno.detalhes);
+        }
+    }
+
+    function erroAoIncluir(retorno) {
+        // informar mensagem de erro 
+        alert("ERRO: " + retorno.resultado + ":" + retorno.detalhes);
+    }
+
+    function carregarComboEndereco(){
+        $.ajax({
+            url: 'http://localhost:5000/listar_enderecos_json',
+            method: 'GET',
+            dataType: 'json',
+            success: carregar,
+            error: error
+        });
+    }
+
+    function carregar(dados){
+        $('#campoEnderecoId').empty();
+        for(var i in dados){
+            $('#campoEnderecoId').append($('<option></option>')
+                .attr("value", dados[i].id)
+                .text(dados[i].rua + ', ' + dados[i].numero));
+        }
+    }
+
+    function error(){
+        alert('Erro ao carregar os endereços!');
+    }
+</script>
+<script>
+    $(window).on("load", () => {
+        carregarComboEndereco();
+    });
+
+    $(document).on("click", "#btnCadastrar", function () {
+        nome = $("#campoNome").val();
+        cpf = $("#campoCpf").val();
+        email = $("#campotelefone").val();
+        endereco_id = $("#campoEnderecoId").val();
+        var dados = JSON.stringify({ nome: nome, cpf: cpf, email: email, endereco_id: endereco_id });
+        $.ajax({
+            url: 'http://127.0.0.1:5000/inserir_cliente',
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: dados,
+            success: clienteIncluido,
+            error: erroAoIncluir
+        });
+    });
+</script>
+</body>
+</html>
